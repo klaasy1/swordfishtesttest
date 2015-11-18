@@ -1,0 +1,62 @@
+<form id="addIssueForm" class="form-horizontal" action="Issue/add" method="post">
+    <div class="form-group">
+        <label for="client_name" class="control-label col-xs-2 requiredFont">*Require Fields</label>
+        <div class="col-xs-10">
+            &nbsp;
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="client_name" class="control-label col-xs-2">Client Name</label>
+        <div class="col-xs-10">
+            <select class="form-control input-sm" name="client_name" id="client_name">
+                <option value="C: Client A">Client A</option>
+                <option value="C: Client B">Client B</option>
+                <option value="c: Client C">Client C</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="title" class="control-label col-xs-2">Title<span class="requiredFont">*</span></label>
+        <div class="col-xs-10">
+            <input name="title" id="title" type="text" class="form-control input-sm" placeholder="Title" class="required" validate="text">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="description" class="control-label col-xs-2">Description<span class="requiredFont">*</span></label>
+        <div class="col-xs-10">
+            <input name="description" id="description" type="text" class="form-control input-sm" placeholder="Description" class="required" validate="text">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="category" class="control-label col-xs-2">Category</label>
+        <div class="col-xs-10">
+            <select name="category" id="category" class="form-control input-sm">
+                <option value="Cat: bug">bug</option>
+                <option value="Cat: enhancement">enhancement</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="priority" class="control-label col-xs-2">Priority</label>
+        <div class="col-xs-10">
+            <select id="priority" name="priority" class="form-control input-sm">
+                <option value="P: Low Priority">P: Low Priority</option>
+                <option value="P: Medium Priority">P: Medium Priority</option>
+                <option value="P: High Priority">P: High Priority</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="author" class="control-label col-xs-2">Author</label>
+        <div class="col-xs-10">
+            <select id="author" name="author" class="form-control input-sm">
+                <option value="swordfishtest">Swordfishtest</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-xs-offset-2 col-xs-10">
+            <button type="submit" class="btn btn-primary link">Submit</button>
+        </div>
+    </div>
+</form>
