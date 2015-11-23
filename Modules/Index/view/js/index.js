@@ -15,13 +15,14 @@ function checkLinks(container) {
         $(container + ' a').bind('click', function (event) {
             if ($(this).attr('ignore') != 1) {
                 if ($(this).attr('href') != '#' && $(this).attr('href') !== undefined) {
-                    event.preventDefault();
+                    
                     var url = $(this).attr('href');
                     var target = $(this).attr('target');
                     if (target == '_blank') {
                         $(this).unbind();
                         return;
                     }
+                    event.preventDefault();
                     if (target) {
                         target = target.replace('#', '*');
                     } else {
@@ -75,6 +76,10 @@ function ajaxSetup() {
         }
     });
     
+}
+
+function setIssueNumber(){
+    $("#setIssueNumberLink").attr('href', "Issue/render/"+$('#issuesPerPage').val()+"");
 }
 
 $(document).ready(function() {

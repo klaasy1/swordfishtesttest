@@ -50,7 +50,13 @@
         <label for="author" class="control-label col-xs-2">Author</label>
         <div class="col-xs-10">
             <select id="author" name="author" class="form-control input-sm">
-                <option value="swordfishtest">Swordfishtest</option>
+            <?php
+                foreach($assignees as $assignee){
+            ?>
+                <option value="<?= $assignee->getLogin();?>"><?= $assignee->getLogin();?></option>
+            <?php
+                }
+            ?>
             </select>
         </div>
     </div>

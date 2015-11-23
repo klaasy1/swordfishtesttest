@@ -2,13 +2,14 @@
     <a type="button" href="Issue/add" class="btn btn-primary col-xs-1">Add Issue</a>
     <div class="col-xs-3 selectContainer">
         <form id="issuesPerPageForm" class="form-horizontal" action="Issue" method="post">
-            <select id="issuesPerPage" name="" name="language" class="form-control" onchange="submitForm(document.getElementById('issuesPerPageForm'));">
+            <select id="issuesPerPage" name="" name="language" class="form-control" onchange="setIssueNumber();">
                 <option value="5">5</option>
                 <option value="10">10</option>
                 <option value="20">20</option>
             </select>
         </form>
     </div>
+    <a id="setIssueNumberLink" type="button" href="Issue/render/5" class="btn btn-primary col-xs-1">Show</a>
 </div>
 <table class="table table-striped table-bordered table-hover">
     <thead>
@@ -22,5 +23,5 @@
 </table>
 <ul class="pager col-xs-12">
     <li class="previous disabled"><a href="#">&larr; Previous</a></li>
-    <li class="next"><a href="#">Next &rarr;</a></li>
+    <li class="next"><a href="Issue/render/next">Next &rarr;</a></li>
 </ul>

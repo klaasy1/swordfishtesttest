@@ -18,9 +18,11 @@ class Index extends Main {
     
     function render() {
         
+        //Show login page
         include(MODULE_PATH.'Issue'.DIRECTORY_SEPARATOR.'Issue.php');
         $content = new Issue();
+            
+        include(MODULE_PATH.'Index'.DIRECTORY_SEPARATOR.'view'.DIRECTORY_SEPARATOR.'index.phtml');
         
-        include(MODULE_PATH.'Index'.DIRECTORY_SEPARATOR.'view'.DIRECTORY_SEPARATOR.'index.php');
     }
 }

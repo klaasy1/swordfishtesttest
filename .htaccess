@@ -1,4 +1,5 @@
 RewriteEngine on
+RewriteRule ^(admin)($|/) - [L]
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^([^/]*)(.*)$ index.php?module=$1&params=$2

@@ -21,17 +21,33 @@ class Issue extends Main {
         include(LIBRARYPHP_PATH.DIRECTORY_SEPARATOR.'php'.DIRECTORY_SEPARATOR.'github-php-client-master'.DIRECTORY_SEPARATOR.'client'.DIRECTORY_SEPARATOR.'GitHubClient.php');
 
         $client = new GitHubClient();
-        //$oauth = $client->oauth->getOrCreateAuthorizationForApp('user, repo, gist', 'Just a note', 'http://klaasy.koding.io/swordfish/', '8a6e684745810b594a77', 'e821fd28347d035c665cb99677ba16520652a0ee');
-        //$oauth = $client->oauth->listYourAuthorizations();
+        
+        $client->setPage();
+        $issuesPerPage = 1;
+        
+        $par = explode('/',$_REQUEST['params']);
+        
+        //
+        if(isset($par[2])){
+            if($par[2] == 'next'){
+                $client->getNextPage();
+            }
+            elseif($par[2] == 'previous'){
+                $client->getPreviousPage();
+            }
+            else{
+                $issuesPerPage = $par[2];
+            }
+        }
+        $client->setPageSize($issuesPerPage);
         
         $this->login($client);
         
-        $client->setPage();
-        $issuesPerPage = 5;
-        if(isset($_POST['issuesPerPage'])){
-            $issuesPerPage = $_POST['issuesPerPage'];
-        }
-        $client->setPageSize($issuesPerPage);
+        //Authenticate user
+        //$client->setAuthType(GitHubClientBase::GITHUB_AUTH_TYPE_OAUTH_BASIC);
+        //$client->setOauthKey($_SESSION['token']); 
+        
+        
         $issues = $client->issues->listIssues(OWNER, REPO);
         
         $row_content = "";
@@ -91,45 +107,53 @@ class Issue extends Main {
     
     function add(){
         
-        $jsonResponse = array();
-        
         if(isset($_POST['client_name'])){
-            
-            header('Content-Type: application/json');
             
             include(LIBRARYPHP_PATH.DIRECTORY_SEPARATOR.'php'.DIRECTORY_SEPARATOR.'github-php-client-master'.DIRECTORY_SEPARATOR.'client'.DIRECTORY_SEPARATOR.'GitHubClient.php');
         
             $client = new GitHubClient();
-        
-            $this->login($client);
-        
-            //$client->issues->createAnIssue(OWNER, REPO, $_POST['client_name'], $_POST['description']);
+
+            //Authenticate user
+            //$client->setAuthType(GitHubClientBase::GITHUB_AUTH_TYPE_OAUTH_BASIC);
+            //$client->setOauthKey($_SESSION['token']); //This does the same this as $this->login($client);, but returns a 404 not sure why because the scope is user , repo
+            $this->login($client); //Use top 2 lines to authenticate with a token
+
             $client->issues->createAnIssue(OWNER, REPO, $_POST['title'], $_POST['description'], $_POST['Swordfishtest'], null, array($_POST['priority'], $_POST['category'], $_POST['client_name']));
-            
+
+            header('Content-Type: application/json');
             //Set "success" to true
             $jsonResponse['success'] = true;
             //Message to display after succesfull issue creation
             $jsonResponse['message'] = "Issue added successful";
             //Redirect to Issue
-            $jsonResponse['redirect'] = "Issue";
+            //$jsonResponse['redirect'] = "Issue/success";
             
-            //echo json_encode($jsonResponse);
+            echo json_encode($jsonResponse);
             
-            include(MODULE_PATH.'Issue'.DIRECTORY_SEPARATOR.'view'.DIRECTORY_SEPARATOR.'success.phtml');
             
             return true;
         }
         
+        include(LIBRARYPHP_PATH.DIRECTORY_SEPARATOR.'php'.DIRECTORY_SEPARATOR.'github-php-client-master'.DIRECTORY_SEPARATOR.'client'.DIRECTORY_SEPARATOR.'GitHubClient.php');
         
-        $jsonResponse['success'] = false;
-        //$jsonResponse['redirect'] = "";
-            
+        $client = new GitHubClient();
+        $this->login($client);
+        $assignees = $client->issues->assignees->listAssignees(OWNER, REPO);
         include(MODULE_PATH.'Issue'.DIRECTORY_SEPARATOR.'view'.DIRECTORY_SEPARATOR.'add.phtml');
         
     }
     
     function login($client){
         $client->setCredentials('swordfishtest', 'warr10r');
+    }
+    
+    function logout(){
+        session_destroy();
+        header("Locaction http://klaasy.koding.io/swordfish/admin");
+    }
+    
+    function success(){
+        include(MODULE_PATH.'Issue'.DIRECTORY_SEPARATOR.'view'.DIRECTORY_SEPARATOR.'success.phtml');
     }
     
 }

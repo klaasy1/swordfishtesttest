@@ -1,9 +1,4 @@
 function submitForm(form) {
-    
-    console.log($(form).attr('action'));
-    console.log($(form).attr('method'));
-    console.log($(form).serialize());
-    
     $.ajax({
         url: $(form).attr('action'),
         method: $(form).attr('method'),
@@ -34,8 +29,8 @@ function submitForm(form) {
             }
             
         },
-        error: function() {
-            
-        } 
+        error: function (request, status, error) {
+            alert(request.responseText);
+        }
     });
 }

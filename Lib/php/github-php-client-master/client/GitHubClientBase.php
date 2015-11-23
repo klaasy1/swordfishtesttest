@@ -195,7 +195,7 @@ abstract class GitHubClientBase
 		}
 		 
 		curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($c, CURLOPT_USERAGENT, "tan-tan.github-api");
+		curl_setopt($c, CURLOPT_USERAGENT, "swordfishtest");
 		curl_setopt($c, CURLOPT_TIMEOUT, $this->timeout);
 		curl_setopt($c, CURLOPT_HEADER, true);
 		curl_setopt($c, CURLOPT_FOLLOWLOCATION, true);
