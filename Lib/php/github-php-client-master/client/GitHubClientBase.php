@@ -5,6 +5,7 @@ abstract class GitHubClientBase
 {
 	const GITHUB_AUTH_TYPE_BASIC = 'basic';
 	const GITHUB_AUTH_TYPE_OAUTH_BASIC = 'x-oauth-basic';
+	const GITHUB_AUTH_TYPE_OAUTH_WEBFLOW = 'Authorization: token ';
 
 	protected $url = 'https://api.github.com';
 	protected $uploadUrl = 'https://uploads.github.com';
@@ -18,6 +19,7 @@ abstract class GitHubClientBase
 	
 	protected $authType = self::GITHUB_AUTH_TYPE_BASIC;
 	protected $oauthKey = null;
+	protected $oauthToken = null;
 
 	protected $page = null;
 	protected $pageSize = 100;
@@ -37,6 +39,9 @@ abstract class GitHubClientBase
 		{
 			case self::GITHUB_AUTH_TYPE_OAUTH_BASIC:
 				$this->authType = self::GITHUB_AUTH_TYPE_OAUTH_BASIC;
+				break;
+			case self::GITHUB_AUTH_TYPE_OAUTH_WEBFLOW:
+				$this->authType = self::GITHUB_AUTH_TYPE_OAUTH_WEBFLOW;
 				break;
 			case self::GITHUB_AUTH_TYPE_BASIC:
 			default:
@@ -62,6 +67,15 @@ abstract class GitHubClientBase
 			throw new GitHubClientException("Cannot set OAuth key when authentication type is not 'x-oauth-basic'");
 		}
 		$this->oauthKey = $key;
+	}
+	
+	public function setOauthToken($Token)
+	{
+		if($this->authType != self::GITHUB_AUTH_TYPE_OAUTH_WEBFLOW)
+		{
+			throw new GitHubClientException("Cannot set OAuth Token when authentication type is not 'x-oauth-webflow'");
+		}
+		$this->oauthToken = $Token;
 	}
 
 	public function setDebug($debug)
@@ -192,6 +206,13 @@ abstract class GitHubClientBase
 		{
 			curl_setopt($c, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
 			curl_setopt($c, CURLOPT_USERPWD, "$this->oauthKey:".self::GITHUB_AUTH_TYPE_OAUTH_BASIC);
+		}
+		elseif($this->authType == self::GITHUB_AUTH_TYPE_OAUTH_WEBFLOW && $this->oauthToken){
+		    $post_headers = array("Content-type: application/json", self::GITHUB_AUTH_TYPE_OAUTH_WEBFLOW.$this->oauthToken);
+		    curl_setopt($c, CURLOPT_HTTPHEADER, $post_headers);
+		    //print_r($post_headers);
+		    //die();
+		    //$url.='?access_token='.$this->oauthToken;
 		}
 		 
 		curl_setopt($c, CURLOPT_RETURNTRANSFER, true);

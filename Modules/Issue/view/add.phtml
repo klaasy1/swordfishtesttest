@@ -9,9 +9,7 @@
         <label for="client_name" class="control-label col-xs-2">Client Name</label>
         <div class="col-xs-10">
             <select class="form-control input-sm" name="client_name" id="client_name">
-                <option value="C: Client A">Client A</option>
-                <option value="C: Client B">Client B</option>
-                <option value="c: Client C">Client C</option>
+                <?= $client_name; ?>
             </select>
         </div>
     </div>
@@ -31,8 +29,7 @@
         <label for="category" class="control-label col-xs-2">Category</label>
         <div class="col-xs-10">
             <select name="category" id="category" class="form-control input-sm">
-                <option value="Cat: bug">bug</option>
-                <option value="Cat: enhancement">enhancement</option>
+                <?= $category; ?>
             </select>
         </div>
     </div>
@@ -40,16 +37,14 @@
         <label for="priority" class="control-label col-xs-2">Priority</label>
         <div class="col-xs-10">
             <select id="priority" name="priority" class="form-control input-sm">
-                <option value="P: Low Priority">P: Low Priority</option>
-                <option value="P: Medium Priority">P: Medium Priority</option>
-                <option value="P: High Priority">P: High Priority</option>
+                <?= $priority; ?>
             </select>
         </div>
     </div>
     <div class="form-group">
-        <label for="author" class="control-label col-xs-2">Author</label>
+        <label for="assignee" class="control-label col-xs-2">Assign to</label>
         <div class="col-xs-10">
-            <select id="author" name="author" class="form-control input-sm">
+            <select id="assignee" name="assignee" class="form-control input-sm">
             <?php
                 foreach($assignees as $assignee){
             ?>

@@ -16,6 +16,10 @@ class Issue extends Main {
         
     }
     
+    /**
+     * This function must be implemented, it is define in the abstract class
+     *
+     */
     function render() {
         
         include(LIBRARYPHP_PATH.DIRECTORY_SEPARATOR.'php'.DIRECTORY_SEPARATOR.'github-php-client-master'.DIRECTORY_SEPARATOR.'client'.DIRECTORY_SEPARATOR.'GitHubClient.php');
@@ -23,7 +27,7 @@ class Issue extends Main {
         $client = new GitHubClient();
         
         $client->setPage();
-        $issuesPerPage = 1;
+        $issuesPerPage = 100;
         
         $par = explode('/',$_REQUEST['params']);
         
@@ -41,15 +45,20 @@ class Issue extends Main {
         }
         $client->setPageSize($issuesPerPage);
         
-        $this->login($client);
+        //Authenticate user with username and password
+        //$this->login($client);
         
-        //Authenticate user
+        //Authenticate user TYPE OAUTH BASIC
         //$client->setAuthType(GitHubClientBase::GITHUB_AUTH_TYPE_OAUTH_BASIC);
-        //$client->setOauthKey($_SESSION['token']); 
+        //$client->setOauthKey($_SESSION['signup_data']['token']); //This does the same this as $this->login($client);, but returns a 404 not sure why because the scope is user , repo (also added public_repo, repo_deployment, notifications, gist)
+        //$client->setDebug(true);
         
-        
+        //Authenticate user TYPE OAUTH WEBFLOW
+        $client->setAuthType(GitHubClientBase::GITHUB_AUTH_TYPE_OAUTH_WEBFLOW);
+        $client->setOauthToken($_SESSION['signup_data']['token']);
+            
         $issues = $client->issues->listIssues(OWNER, REPO);
-        
+
         $row_content = "";
         foreach ($issues as $issue)
         {
@@ -112,14 +121,21 @@ class Issue extends Main {
             include(LIBRARYPHP_PATH.DIRECTORY_SEPARATOR.'php'.DIRECTORY_SEPARATOR.'github-php-client-master'.DIRECTORY_SEPARATOR.'client'.DIRECTORY_SEPARATOR.'GitHubClient.php');
         
             $client = new GitHubClient();
+            //$client->setDebug(true);
 
-            //Authenticate user
+            //Authenticate user TYPE OAUTH BASIC
             //$client->setAuthType(GitHubClientBase::GITHUB_AUTH_TYPE_OAUTH_BASIC);
-            //$client->setOauthKey($_SESSION['token']); //This does the same this as $this->login($client);, but returns a 404 not sure why because the scope is user , repo
-            $this->login($client); //Use top 2 lines to authenticate with a token
-
-            $client->issues->createAnIssue(OWNER, REPO, $_POST['title'], $_POST['description'], $_POST['Swordfishtest'], null, array($_POST['priority'], $_POST['category'], $_POST['client_name']));
-
+            //$client->setOauthKey($_SESSION['signup_data']['token']); //This does the same this as $this->login($client);, but returns a 404 not sure why because the scope is user , repo
+            
+            //Authenticate user TYPE OAUTH WEBFLOW
+            //$client->setAuthType(GitHubClientBase::GITHUB_AUTH_TYPE_OAUTH_WEBFLOW);
+            //$client->setOauthToken($_SESSION['signup_data']['token']); //This does the same this as $this->login($client);, but returns a 404 not sure why because the scope is user , repo
+            
+            //Authenticate user with username and password
+            $this->login($client); //Use top OAUTH WEBFLOW to authenticate with a token, but it returns a 404 not sure why uncomment $client->setDebug(true); to see what the server response is
+            
+            $client->issues->createAnIssue(OWNER, REPO, $_POST['title'], $_POST['description'], $_POST['assignee'], null, array($_POST['priority'], $_POST['category'], $_POST['client_name']));
+            
             header('Content-Type: application/json');
             //Set "success" to true
             $jsonResponse['success'] = true;
@@ -138,20 +154,52 @@ class Issue extends Main {
         
         $client = new GitHubClient();
         $this->login($client);
+        
+        $labels = $client->issues->labels->listAllLabelsForThisRepository(OWNER, REPO);
+        //print_r($labels);
+        
+        $priority = "";
+        $client_name = "";
+        $category = "";
+        foreach($labels as $label){
+            $tempArr = explode(":", $label->getName());
+            switch ($tempArr[0]){
+                case 'P':
+                    $priority .= '<option value="'.$label->getName().'">'.$tempArr[1].'</option>';
+                    break;
+                case 'C':
+                    $client_name .= '<option value="'.$label->getName().'">'.$tempArr[1].'</option>';
+                    break;
+                case 'Cat':
+                    $category .= '<option value="'.$label->getName().'">'.$tempArr[1].'</option>';
+                    break;
+            }
+        }
+        
         $assignees = $client->issues->assignees->listAssignees(OWNER, REPO);
         include(MODULE_PATH.'Issue'.DIRECTORY_SEPARATOR.'view'.DIRECTORY_SEPARATOR.'add.phtml');
         
     }
     
+    /**
+	 * Login with user credentials
+	 * @param $client object
+	 */
     function login($client){
         $client->setCredentials('swordfishtest', 'warr10r');
     }
     
+    /**
+	 * Logs out
+	 */
     function logout(){
         session_destroy();
         header("Locaction http://klaasy.koding.io/swordfish/admin");
     }
     
+    /**
+	 * Display the success page on successful issue creation
+	 */
     function success(){
         include(MODULE_PATH.'Issue'.DIRECTORY_SEPARATOR.'view'.DIRECTORY_SEPARATOR.'success.phtml');
     }
